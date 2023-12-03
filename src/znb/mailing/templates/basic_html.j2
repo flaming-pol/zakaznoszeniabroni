@@ -1,0 +1,22 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    Dzień dobry,<br>
+    otrzymujesz tę wiadomość, ponieważ został ogłoszony <strong>zakaz noszenia broni</strong>.
+    <br><br>
+
+    <strong>Szczegóły rozporządzenia:</strong><br>
+    data publikacji: {{ date }}<br>
+    numer: {{ number }}/{{ year }}<br>
+    link: <a href="{{ pdf_url }}">{{ pdf_url }}</a>
+    <br><br>
+
+    Data publikacji rozporządzenia <strong>nie jest datą obowiązywania zakazu</strong>. Aby sprawdzić szczegóły przeczytaj pełną treść <a href="{{ pdf_url }}">rozporządzenia</a>.
+    <br><br><br><br>
+    Wiadomość wysłana z serwisu <a href="https://zakaznoszeniabroni.pl">https://zakaznoszeniabroni.pl</a>.
+    Jeśli nie chcesz otrzymywać więcej takich powiadomień, usuń swój adres z bazy danych klikając w <a href="https://zakaznoszeniabroni.pl/rejestracja.php?usun={{ unregister_key }}">link</a>.<br>
+    Wiadomość wysłana automatycznie. Proszę na nią nie odpowiadać.
+  </body>
+</html>

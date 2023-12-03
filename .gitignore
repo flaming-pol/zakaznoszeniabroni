@@ -1,0 +1,26 @@
+# Python
+__pycache__
+venv311
+src/.env-prod
+src/.env-test
+src/logs/znb.log*
+src/notyfikacje-testy.py
+
+# Dodatki
+brudnopis.py
+alembic-tips.txt
+
+
+# LaTeX
+web/polityka-prywatnosci/*.aux
+web/polityka-prywatnosci/*.log
+web/polityka-prywatnosci/*.toc
+web/polityka-prywatnosci/*.out
+web/polityka-prywatnosci/*.gz
+web/polityka-prywatnosci/*.pdf
+web/*.pdf
+
+
+# synchronizacja
+ftpsync_prod.sh
+rsync_prod.sh

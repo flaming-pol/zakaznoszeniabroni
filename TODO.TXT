@@ -1,0 +1,21 @@
+Plany rozwoju aplikacji na najbliższy czas:
+
+WEB:
+-- LOW: strona dla komórek
+
+BROADCASTER:
+-- LOW: paginacja odpowiedzi z MySQL
+
+PROG:
+-- HIGH: retencja logów postfixa
+-- MED: przechowywanie w cache insertów i update-ów bazy danych.
+        W przypadku błędów system powinien móc odbudować stan na podstawie zawartości cache.
+-- LOW: do rozważenia asyncio
+
+FEATURES:
+-- HIGH: analizator pdf - wyciąganie daty obowiązywania zakazu
+-- HIGH: analizator pdf - wyciąganie obszaru obowiązywania zakazu
+-- LOW: plugin do firefox/chrome
+-- LOW: aplikacja android
+-- LOW: testy automatyczne z pytest-em
+-- LOW: notyfikacje sms

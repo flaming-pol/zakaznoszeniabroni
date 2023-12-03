@@ -1,0 +1,117 @@
+body {
+  margin: 0 auto;
+  padding: 0px;
+  text-align: center;
+  width: 100%;
+  font-family: "Myriad Pro",
+    "Helvetica Neue", Helvetica,
+    Arial, Sans-Serif;
+}
+
+p {
+  line-height: 1.8;
+  margin: 0;
+}
+
+#msg_container {
+  text-align: center;
+  width: 600px;
+  margin: 2% auto;
+}
+
+.msg_ok {
+  margin: 0 auto;
+  text-align: center;
+  color: green;
+  background: #D4EAD4;
+  border: 1px solid green;
+  border-radius: 10px;
+  margin: 2px;
+}
+
+.msg_fail {
+  margin: 0 auto;
+  text-align: center;
+  color: red;
+  background: #FFF0F0;
+  border: 1px solid red;
+  border-radius: 10px;
+  margin: 2px;
+}
+
+.tab {
+  tab-size: 2;
+}
+
+#main {
+  margin: 0 auto;
+  padding: 0px;
+  text-align: center;
+  width: 995px;
+}
+
+#main h1 {
+  margin-top: 40px;
+  margin-bottom: 15px;
+  font-size: 40px;
+  color: #585858;
+}
+
+#main h1 p {
+  font-size: 20px;
+}
+
+#kontakt {
+  margin: 0 auto;
+  padding: 0px;
+  width: 900px;
+  margin-top: 30px;
+  font-size: 15px;
+  text-align: left;
+}
+
+#stopka {
+  margin: 0 auto;
+  padding: 0px;
+  width: 400px;
+  margin-top: 20px;
+  font-size: 12px;
+  text-align: left;
+  font-style: italic;
+}
+
+#checkboxy_zgody {
+  margin: 0 auto;
+  width: 600px;
+  text-align: left;
+}
+
+#tabelka {
+  /* table-layout: fixed; */
+  width: 900px;
+  max-width: 900px;
+  text-align: left;
+  border-collapse: collapse;
+  color: #2E2E2E;
+  border: #A4A4A4;
+}
+
+#tabelka tr:hover {
+  background-color: #F2F2F2;
+}
+
+#tabelka td {
+  overflow: hidden;
+}
+
+#tabelka .hidden_row {
+  display: none;
+}
+
+#tabelka .alarm {
+  background-color: #EE4B4B;
+}
+
+#tabelka .rok_row {
+  cursor:pointer;
+}

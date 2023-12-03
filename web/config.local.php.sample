@@ -1,0 +1,10 @@
+<?php
+ $config->dbHost = 'db';
+ $config->dbName = 'znb_db';
+ $config->dbUser = 'root';
+ $config->dbPass = '123qwe';
+ $config->dbPort = '3306';
+ $config->memcachedHost = 'localhost';
+ $config->memcachedPort = 11211;
+ $config->memcachedExpire = 5;
+?>
