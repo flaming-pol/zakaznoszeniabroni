@@ -120,7 +120,7 @@ foreach ($legal_acts_rows as $row) {
     Korzystasz na własną odpowiedzialność. Pamiętaj, że oficjalnym źródłem informacji o obowiązujących ustawach i rozporządzeniach jest <a href="https://dziennikustaw.gov.pl" target="_blank">https://dziennikustaw.gov.pl</a>
     <br><br>
     Projekt <i>zakaznoszeniabroni.pl</i> jest oprogramowaniem open source publikowanym na licencji <a href="https://www.gnu.org/licenses/gpl-3.0.html#license-text" target="_blank">GPLv3</a>.
-    Kod źródłowy znajduje się w serwisie GitHub - <a href="#">link do repozytorium</a>.
+    Kod źródłowy znajduje się w serwisie GitHub - <a href="https://github.com/flaming-pol/zakaznoszeniabroni" target="_blank">link do repozytorium</a>.
     <br><br>
     Masz uwagi do działania strony? Napisz maila na: <a href="mailto:kontakt@zakaznoszeniabroni.pl" target="_blank">kontakt@zakaznoszeniabroni.pl</a>
 	</div>
