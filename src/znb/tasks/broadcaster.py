@@ -19,7 +19,7 @@ from znb.models import LegalAct
 def delete_users_not_activated():
     db = SessionLocal()
     db_users = UserCRUD()
-    users = db_users.delete_not_active(db, hours=12)
+    users = db_users.delete_not_active(db, hours=24)
     db.close()
     for u in users:
         logging.warning(f"Usunieto użytkownika: id={u.id}, email={u.email}"
@@ -33,9 +33,10 @@ def process_send_confirmation():
     users = db_users.get_users_withou_confirmation_string(db)
     if users:
         logging.debug("Wysyłanie e-mail z potiwerdzeniem założenia konta")
-        s = SmtpWrapper(config.MAIL_SERVER, config.MAIL_SERVER_PORT, config.MAIL_TLS)
+        s = SmtpWrapper(config.MAIL_SERVER, config.MAIL_SERVER_PORT, config.MAIL_TLS,
+                        config.MAIL_SSL, config.MAIL_USERNAME, config.MAIL_PASSWORD)
         for user in users:
-            logging.info(f"Wysyłanie e-maila z potwierdzenem do {user.id} ({user.email})")
+            logging.debug(f"Wysyłanie maila z potwierdzenem do {user.id} ({user.email})")
             while True:
                 confirmation_string = ''.join(random.choice(
                     string.ascii_letters + string.digits) for i in range(256))
@@ -85,9 +86,11 @@ def process_event(act: LegalAct):
     db_acts = LegalActCRUD()
     db_users = UserCRUD()
     db_notif = NotificationCRUD()
-    s = SmtpWrapper(config.MAIL_SERVER, config.MAIL_SERVER_PORT, config.MAIL_TLS)
+    s = SmtpWrapper(config.MAIL_SERVER, config.MAIL_SERVER_PORT, config.MAIL_TLS,
+                    config.MAIL_SSL, config.MAIL_USERNAME, config.MAIL_PASSWORD)
     smtp_errors = 0
     count = 0
+    mail_delay = config.MAIL_SEND_DELAY
 
     if act.year < 2023:
         logging.error(f"Zgłoszono notyfikacje do zdarzenia z przeszłości: {act.year}")
@@ -122,15 +125,15 @@ def process_event(act: LegalAct):
             pass
         else:
             db_notif.create(db, user_id=u.id, act_id=act.id)
-            logging.debug(f"notyfikacja użytkownika id={u.id} ({u.email}) o rozp. "
-                          f"{act.number}/{act.year}")
+            logging.info(f"notyfikacja użytkownika id={u.id} ({u.email}) o rozp. "
+                         f"{act.number}/{act.year}")
             count += 1
-        time.sleep(.05)
+        time.sleep(mail_delay)
     logging.info(f"notyfikowano {count} użytkowników"
                  f" w czasie {time.time()-start_time:.4f} s.")
     if smtp_errors == 0:
         act.notif_finished_proc = datetime.now()
         db_acts.update(db, act)  # finish timestamp
-    logging.debug(f"wykryto {smtp_errors} błędów smtp,"
-                  f" {s.reconnects} ponawianych połączeń.")
+    logging.info(f"wykryto {smtp_errors} błędów smtp,"
+                 f" {s.reconnects} ponawianych połączeń.")
     db.close()

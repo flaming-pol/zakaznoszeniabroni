@@ -7,7 +7,6 @@ BROADCASTER:
 -- LOW: paginacja odpowiedzi z MySQL
 
 PROG:
--- HIGH: retencja logów postfixa
 -- MED: przechowywanie w cache insertów i update-ów bazy danych.
         W przypadku błędów system powinien móc odbudować stan na podstawie zawartości cache.
 -- LOW: do rozważenia asyncio

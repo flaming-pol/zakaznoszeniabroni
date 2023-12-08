@@ -18,6 +18,10 @@ class get_config:
     MAIL_SERVER_PORT = None
     MAIL_FROM = None
     MAIL_TLS = False
+    MAIL_SSL = False
+    MAIL_USERNAME = None
+    MAIL_PASSWORD = None
+    MAIL_SEND_DELAY = 0.1
 
     def __init__(self):
         load_dotenv(override=False)
@@ -33,6 +37,10 @@ class get_config:
         self.NOTIFICATION_SEND_INTERVAL = float(env.get('NOTIFICATION_SEND_INTERVAL', 1))
         self.CONFIRMATION_MAIL_SEND_INTERVAL = float(env.get('CONFIRMATION_MAIL_SEND_INTERVAL', 30))
         self.MAIL_SERVER = env.get('MAIL_SERVER', 'localhost')
-        self.MAIL_SERVER_PORT = int(env.get('MAIL_SERVER_PORT', 1))
-        self.MAIL_FROM = env.get('MAIL_FROM', 'user@server.local')
+        self.MAIL_SERVER_PORT = int(env.get('MAIL_SERVER_PORT', 25))
+        self.MAIL_FROM = env.get('MAIL_FROM', None)
         self.MAIL_TLS = (env.get('MAIL_TLS', False) == 'True')
+        self.MAIL_SSL = (env.get('MAIL_SSL', False) == 'True')
+        self.MAIL_USERNAME = env.get('MAIL_USERNAME', None)
+        self.MAIL_PASSWORD = env.get('MAIL_PASSWORD', None)
+        self.MAIL_SEND_DELAY = float(env.get('MAIL_SEND_DELAY', 0.1))

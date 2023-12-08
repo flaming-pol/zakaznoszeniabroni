@@ -5,6 +5,7 @@ src/.env-prod
 src/.env-test
 src/logs/znb.log*
 src/notyfikacje-testy.py
+src/smtp-test.py
 
 # Dodatki
 brudnopis.py
