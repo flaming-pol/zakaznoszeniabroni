@@ -5,6 +5,7 @@ WEB:
 
 BROADCASTER:
 -- LOW: paginacja odpowiedzi z MySQL
+-- LOW: powiadomienia o rozpoczęciu obowiązywania zakazu (jak będą wyciągnięte daty obowiązywania)
 
 PROG:
 -- MED: przechowywanie w cache insertów i update-ów bazy danych.
