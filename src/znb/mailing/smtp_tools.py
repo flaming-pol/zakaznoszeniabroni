@@ -1,8 +1,9 @@
 import logging
 import smtplib
+import ssl
 
 from email.message import EmailMessage
-from email.utils import formataddr
+from email.utils import formataddr, formatdate, make_msgid
 # from email.mime.text import MIMEText
 # from email.mime.multipart import MIMEMultipart
 from jinja2 import Environment, PackageLoader
@@ -13,16 +14,39 @@ environment = Environment(loader=PackageLoader("znb.mailing", "templates"))
 
 
 class SmtpWrapper:
-    def __init__(self, host: str, port: int, tls_support: bool = False):
+    def __init__(self, host: str, port: int, tls_support: bool = False,
+                 ssl_support: bool = False, user: str = None, passwd: str = None):
         self.host = host
         self.port = port
         self.server = None
         self.reconnects = 0
         self.tls = tls_support
+        self.ssl = ssl_support
+        self.user = user
+        self.passwd = passwd
 
     def __del__(self):
         if self.server:
-            self.server.quit()
+            try:
+                self.server.quit()
+            except smtplib.SMTPServerDisconnected:
+                pass
+
+    def authenticate(self):
+        if self.tls is True:
+            self.server.ehlo()
+            self.server.starttls()
+        if self.user and self.passwd:
+            self.server.login(self.user, self.passwd)
+
+    def connect(self):
+        if not self.server:
+            if self.ssl is True:
+                self.context = ssl.create_default_context()
+                self.server = smtplib.SMTP_SSL(self.host, self.port, self.context)
+            else:
+                self.server = smtplib.SMTP(self.host, self.port)
+            self.authenticate()
 
     @retry(
         stop=stop_after_attempt(10),
@@ -31,15 +55,12 @@ class SmtpWrapper:
         reraise=True,
     )
     def send_mail(self, msg: EmailMessage):
-        if not self.server:
-            self.server = smtplib.SMTP(self.host, self.port)
-            self.server.ehlo()
-            if self.tls is True:
-                self.server.starttls()
+        self.connect()
         try:
             self.server.send_message(msg)
         except (smtplib.SMTPServerDisconnected, smtplib.SMTPConnectError) as e:
             self.server.connect(self.host, self.port)
+            self.authenticate()
             self.reconnects += 1
             raise e
 
@@ -84,6 +105,8 @@ def notification_mail_render(destination_email: str, source_email: str, subject:
                              unregister_key: str,
                              reply_email: str = None) -> EmailMessage:
     message = EmailMessage()
+    message['Date'] = formatdate()
+    message['Message-ID'] = make_msgid(domain=source_email.split('@')[1])
     message["To"] = destination_email
     message["From"] = formataddr(("ZakazyNoszeniaBroni.pl", source_email))
     message["Subject"] = subject
@@ -133,6 +156,8 @@ def confirmation_mail_render(destination_email: str, source_email: str,
                              subject: str, confirmation_string: str,
                              reply_email: str = None) -> EmailMessage:
     message = EmailMessage()
+    message['Date'] = formatdate()
+    message['Message-ID'] = make_msgid(domain=source_email.split('@')[1])
     message["To"] = destination_email
     message["From"] = formataddr(("ZakazyNoszeniaBroni.pl", source_email))
     message["Subject"] = subject

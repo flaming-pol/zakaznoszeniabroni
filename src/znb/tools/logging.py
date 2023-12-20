@@ -26,7 +26,7 @@ def setup_logging(filename='logs/znb.log'):
                                             when='midnight',
                                             encoding='utf-8',
                                             utc=False,
-                                            backupCount=10)
+                                            backupCount=0)  # nie usuwa logow
     file_handler.setLevel(log_level)
     handlers = [file_handler, stdout_handler]
     # handlers = [file_handler]

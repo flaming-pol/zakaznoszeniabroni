@@ -47,7 +47,7 @@ def parser():
                                         year=int(act.year),
                                         published_date=act.published_date,
                                         pdf_url=act.pdf_url)
-            logging.info(f"---> dodano do bazy rekord: {act.number}/{act.year} z"
+            logging.info(f"===> dodano do bazy rekord: {act.number}/{act.year} z"
                          f" {act.published_date} id w bazie: {new_record.id}")
             new_records += 1
     if year != 0:
