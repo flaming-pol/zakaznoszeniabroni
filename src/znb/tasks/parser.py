@@ -1,6 +1,8 @@
 import logging
 import time
 
+from datetime import datetime
+
 from znb.config import get_config
 from znb.db import LegalActCRUD, StatsCRUD
 from znb.db.session import SessionLocal
@@ -20,7 +22,9 @@ def parser():
     start_time = time.time()
     config = get_config()
     year = config.PARSER_YEAR
-    logging.debug(f"Uruchomiono parser dla roku {year}")
+    if config.PARSER_YEAR_CURRENT:
+        year = datetime.now().year
+    logging.info(f"Uruchomiono parser dla roku {year}")
 
     db_session = SessionLocal()
     db_acts = LegalActCRUD()

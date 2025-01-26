@@ -10,6 +10,7 @@ class get_config:
     DB_PASS = None
     LOG_LEVEL = None
     PARSER_YEAR = 0
+    PARSER_YEAR_CURRENT = False
     CRAWLER_INTERVAL = 1
     DELETE_USERS_INTERVAL = 12
     NOTIFICATION_SEND_INTERVAL = 1
@@ -31,7 +32,12 @@ class get_config:
         self.DB_USER = env.get('DB_USER', 'user')
         self.DB_PASS = env.get('DB_PASS', 'password')
         self.LOG_LEVEL = env.get('LOG_LEVEL', 'WARNING')
-        self.PARSER_YEAR = int(env.get('PARSER_YEAR', 2023))
+        # self.PARSER_YEAR = int(env.get('PARSER_YEAR', 2023))
+        parser_year = env.get('PARSER_YEAR', 2023)
+        if parser_year.isdecimal():
+            self.PARSER_YEAR = int(parser_year)
+        elif isinstance(parser_year, str) and parser_year == "current":
+            self.PARSER_YEAR_CURRENT = True
         self.CRAWLER_INTERVAL = float(env.get('CRAWLER_INTERVAL', 1))
         self.DELETE_USERS_INTERVAL = float(env.get('DELETE_USERS_INTERVAL', 12))
         self.NOTIFICATION_SEND_INTERVAL = float(env.get('NOTIFICATION_SEND_INTERVAL', 1))
