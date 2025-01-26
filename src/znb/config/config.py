@@ -33,7 +33,7 @@ class get_config:
         self.DB_PASS = env.get('DB_PASS', 'password')
         self.LOG_LEVEL = env.get('LOG_LEVEL', 'WARNING')
         # self.PARSER_YEAR = int(env.get('PARSER_YEAR', 2023))
-        parser_year = env.get('PARSER_YEAR', 2023)
+        parser_year = env.get('PARSER_YEAR', "current")
         if parser_year.isdecimal():
             self.PARSER_YEAR = int(parser_year)
         elif isinstance(parser_year, str) and parser_year == "current":
