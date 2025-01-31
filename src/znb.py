@@ -1,5 +1,5 @@
 #  ZakazNoszeniaBroni.pl -- backend crawler and notifier.
-#  Copyright (C) 2023  mc (kontakt@zakaznoszeniabroni.pl)
+#  Copyright (C) 2023-2025  mc (kontakt@zakaznoszeniabroni.pl)
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@ from znb.config import get_config
 from znb.tasks import (
     parser_wrapper,
     delete_users_not_activated,
+    find_unenriched,
     process_event_from_db,
     process_send_confirmation,
 )
@@ -36,9 +37,10 @@ def main():
     config = get_config()
     setup_logging()
     logging.warning(f"zakaznoszeniabroni.pl -- PID: {os.getpid()},"
-                    f" interwał: {config.CRAWLER_INTERVAL} s.")
+                    f" interwał: {config.CRAWLER_INTERVAL} min.")
 
     check_db()
+    find_unenriched(year_begin=2008)
     delete_users_not_activated()
     process_event_from_db()
     parser_wrapper()
@@ -49,6 +51,8 @@ def main():
     schedule.every(config.DELETE_USERS_INTERVAL).hours.do(delete_users_not_activated)
     schedule.every(config.NOTIFICATION_SEND_INTERVAL).minutes.do(process_event_from_db)
     schedule.every(config.CRAWLER_INTERVAL).minutes.do(parser_wrapper)
+    schedule.every(config.CRAWLER_INTERVAL).minutes.do(find_unenriched,
+                                                       year_begin=config.PARSER_YEAR)
 
     signal.signal(signal.SIGINT, lambda s, f: schedule.clear())
 

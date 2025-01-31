@@ -1,10 +1,12 @@
 import logging
+import requests
 import time
 
 from znb.config import get_config
 from znb.db import LegalActCRUD, StatsCRUD
 from znb.db.session import SessionLocal
 from znb.crawler import dziennik_ustaw_search_v2
+from .enricher import enricher
 
 
 def parser_wrapper():
@@ -20,6 +22,7 @@ def parser():
     start_time = time.time()
     config = get_config()
     year = config.PARSER_YEAR
+    # year = 2024
     logging.debug(f"Uruchomiono parser dla roku {year}")
 
     db_session = SessionLocal()
@@ -41,15 +44,27 @@ def parser():
             logging.debug(f"---> znaleziono w bazie rekord: {act.number}/{act.year} z"
                           f" {act.published_date}, id w bazie: {db_entry[0].id}")
         else:
+            # dodanie rozporzadzenia do bazy
             new_record = db_acts.create(db_session,
                                         name=act.name,
                                         number=int(act.number),
                                         year=int(act.year),
                                         published_date=act.published_date,
-                                        pdf_url=act.pdf_url)
+                                        pdf_url=act.pdf_url,
+                                        enriched=False)
             logging.info(f"===> dodano do bazy rekord: {act.number}/{act.year} z"
                          f" {act.published_date} id w bazie: {new_record.id}")
             new_records += 1
+            # dodanie informacji wzbogacających rozporządzenie
+            if not new_record.id:
+                continue
+            is_enriched = enricher(db_session, new_record)
+            if is_enriched:
+                enriched_act = db_acts.get_by_id(db_session, id=new_record.id)
+                for detail in enriched_act.detail:
+                    logging.info(f"     obszar: {detail.area}")
+                    for t in detail.time:
+                        logging.info(f"      {t.begin} - {t.end}")
     if year != 0:
         db_intems = db_acts.count_by_year(db_session, year)
     else:

@@ -1,6 +1,7 @@
 Plany rozwoju aplikacji na najbliższy czas:
 
 WEB:
+-- HIGH: wyświetlanie detali rozporządzeń
 -- LOW: strona dla komórek
 
 BROADCASTER:
@@ -8,14 +9,13 @@ BROADCASTER:
 -- LOW: powiadomienia o rozpoczęciu obowiązywania zakazu (jak będą wyciągnięte daty obowiązywania)
 
 PROG:
--- MED: przechowywanie w cache insertów i update-ów bazy danych.
+-- HIGH: cykliczne wyszukiwanie nie wzbogaconych rozporządzeń i ich próby wzbogacania
+-- HIGH: skrypty do ręcznego wzbogacania rozporządzeń
+-- LOW: przechowywanie w cache insertów i update-ów bazy danych.
         W przypadku błędów system powinien móc odbudować stan na podstawie zawartości cache.
 -- LOW: do rozważenia asyncio
 
 FEATURES:
--- HIGH: analizator pdf - wyciąganie daty obowiązywania zakazu
--- HIGH: analizator pdf - wyciąganie obszaru obowiązywania zakazu
+-- MED: aplikacja android
 -- LOW: plugin do firefox/chrome
--- LOW: aplikacja android
--- LOW: testy automatyczne z pytest-em
 -- LOW: notyfikacje sms

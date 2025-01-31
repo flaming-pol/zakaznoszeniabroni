@@ -1,5 +1,14 @@
 import fitz
+
+import logging
 import re
+
+# UWAGA!
+#
+# Parser PDF rozporządzeń. Wesja 1.0
+#
+# Parser działa prawidłowo dla rozporządzeń publikowanych od 2007 roku jednak
+# zaleca się stosowanie go do rozporządzeń od 2008 roku.
 
 MONTHS_REGEX = r"stycznia|lutego|marca|kwietnia|maja|czerwca|lipca|sierpnia|września|października|listopada|grudnia"
 
@@ -76,8 +85,13 @@ def date_proc(data):
     return {'ranges': ranges, 'days': days}
 
 
-def scan_pdf(filename):
-    doc = fitz.open(filename)
+def scan_pdf(filename=None, stream=None):
+    if not filename and not stream:
+        return []
+    if filename:
+        doc = fitz.open(filename)
+    elif stream:
+        doc = fitz.open(stream=stream)
     for page in doc:
         text = page.get_text(flags=fitz.TEXTFLAGS_TEXT | fitz.TEXT_DEHYPHENATE)
         break  # tylko pierwsza strona
@@ -96,7 +110,7 @@ def parser(text_dash):
 
     para_match_obj = re.search(para_regex, text_dash) or re.search(para_regex2, text_dash)
     if not para_match_obj:
-        print("nie znalaziono paragrafu :()")
+        logging.error("Analiza PDF zakończyła się błędem: nie znalaziono paragrafu :(")
         return []
     para_match = para_match_obj.group().strip('§').strip('_')
 
@@ -111,7 +125,8 @@ def parser(text_dash):
         phase0[0] = phase0[1]+phase0[0][search_obj.span()[0]:]
         phase0.pop(1)
     else:
-        print("nie udało się poprawnie ustalić kierunku przetwarzania :(")
+        logging.error("Analiza PDF zakończyła się błędem nie udało się poprawnie "
+                      "ustalić kierunku przetwarzania :(")
         return []
 
     if phase0[0].startswith(':'):
@@ -129,7 +144,8 @@ def parser(text_dash):
         area = phase5[0]
         date = phase5[1]
         if len(phase5) != 2:
-            print("nie udało się poprawnie przetworzyć danych :(")
+            logging.error("Analiza PDF zakończyła się błędem: nie udało się poprawnie "
+                          "przetworzyć danych - faza 5 :(")
             return []
         area = re.sub(r"\d+\)\_", "", area)
         date = date.replace("od_dnia_", "")
@@ -139,5 +155,10 @@ def parser(text_dash):
         date = re.sub(r"oraz", r"i", date)
         date = re.sub(r"\_i\_", r"i", date)
         date_out = date_proc(date)
-        found_substrings.append({"area": area.replace("_", " "), "dates": date_out})
+        if area and date_out:
+            found_substrings.append({"area": area.replace("_", " "), "dates": date_out})
+        else:
+            logging.error("Analiza PDF zakończyła się błędem: nie udało się poprawnie "
+                          "przetworzyć danych - faza 6 :(")
+            return []
     return found_substrings

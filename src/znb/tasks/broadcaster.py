@@ -111,10 +111,7 @@ def process_event(act: LegalAct):
             destination_email=u.email,
             source_email=config.MAIL_FROM,
             subject="Zakaz noszenia broni - nowy!",
-            date=act.published_date,
-            number=act.number,
-            year=act.year,
-            pdf_url=act.pdf_url,
+            act=act,
             unregister_key=u.confirmation,
         )
         try:

@@ -48,6 +48,10 @@ def z1():
     assert retval == [{'area': 'miasta stołecznego Warszawy',
                        'dates': {'ranges': [], 'days': ['11-11-2019']}}]
 
+    retval = run("pdf-tests/Z1/21.pdf")
+    assert retval == [{'area': 'miasta stołecznego Warszawy',
+                       'dates': {'ranges': [], 'days': ['11-11-2024']}}]
+
 
 def z2():
     # ======================================================================================
@@ -85,6 +89,10 @@ def z2():
     assert retval == [{'area': 'województwa podlaskiego i lubelskiego przyległym do granicy państwowej z Republiką Białorusi',
                        'dates': {'ranges': [['01-12-2021', '01-03-2022']], 'days': []}}]
 
+    retval = run("pdf-tests/Z2/22.pdf")
+    assert retval == [{'area': 'miasta Krakowa oraz miasta Wieliczki',
+                       'dates': {'ranges': [['09-10-2024', '12-10-2024']], 'days': []}}]
+
 
 def z3():
     # ======================================================================================
@@ -113,6 +121,12 @@ def z3():
     retval = run("pdf-tests/Z3/17.pdf")
     assert retval == [{'area': 'miasta Oświęcim, gminy wiejskiej Oświęcim',
                        'dates': {'ranges': [], 'days': ['27-01-2015']}}]
+
+    retval = run("pdf-tests/Z3/23.pdf")
+    assert retval == [{'area': 'miasta Krakowa',
+                       'dates': {'ranges': [['26-01-2025', '27-01-2025']], 'days': []}},
+                      {'area': 'miasta i gminy Oświęcim',
+                      'dates': {'ranges': [], 'days': ['27-01-2025']}}]
 
 
 def z4():
