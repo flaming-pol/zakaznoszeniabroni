@@ -6,7 +6,8 @@ src/.env-test
 src/logs/znb.log*
 src/notyfikacje-testy.py
 src/smtp-test.py
-# src/pdf-tests
+src/pdf-tests
+
 
 # Dodatki
 brudnopis.py
