@@ -1,0 +1,34 @@
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    Dzień dobry,<br>
+    otrzymujesz tę wiadomość, ponieważ został ogłoszony <strong>zakaz noszenia broni</strong>.
+    <br><br>
+    Zakaz obowiązuje na obszarze:<br>
+    {% for d in details %}
+     -- <b>{{ d.area }}</b> w dniach:
+    {% for t in d.time %}
+    {% if (t.end - t.begin).total_seconds() < 86400 %}
+    <b>{{ t.begin.strftime('%d-%m-%Y') }}</b>,
+    {% else %}
+    od <b>{{ t.begin.strftime('%d-%m-%Y') }}</b> do <b>{{ t.end.strftime('%d-%m-%Y') }}</b>,
+    {% endif %}
+    {% endfor %}<br>
+    {% endfor %}
+    <br><br>
+
+    <strong>Szczegóły rozporządzenia:</strong><br>
+    data publikacji: {{ date }}<br>
+    numer: {{ number }}/{{ year }}<br>
+    link: <a href="{{ pdf_url }}">{{ pdf_url }}</a>
+    <br><br><br>
+
+    <b>Uwaga</b> informacje o obszarze obowiązywania zakazu oraz datach zostały pobrane z pliku PDF rozporządzenia w sposób automatyczny. Zapoznaj się z pełną treścią <a href="{{ pdf_url }}">rozporządzenia</a>!
+    <br><br><br><br>
+    Wiadomość wysłana z serwisu <a href="https://zakaznoszeniabroni.pl">https://zakaznoszeniabroni.pl</a>.
+    Jeśli nie chcesz otrzymywać więcej takich powiadomień, usuń swój adres z bazy danych klikając w <a href="https://zakaznoszeniabroni.pl/rejestracja.php?usun={{ unregister_key }}">link</a>.<br>
+    Wiadomość wysłana automatycznie. Proszę na nią nie odpowiadać.
+  </body>
+</html>

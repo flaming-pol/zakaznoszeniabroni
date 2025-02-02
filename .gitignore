@@ -8,6 +8,7 @@ src/notyfikacje-testy.py
 src/smtp-test.py
 src/pdf-tests
 
+
 # Dodatki
 brudnopis.py
 alembic-tips.txt

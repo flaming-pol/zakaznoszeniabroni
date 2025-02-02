@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, String, Integer
+from sqlalchemy import Boolean, Column, DateTime, String, Integer
 from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -16,6 +16,7 @@ class LegalAct(Base):
     published_date = Column(String(16), unique=False, nullable=True)
     pdf_url = Column(String(255), unique=False, nullable=True)
     date_created = Column(DateTime(timezone=True), server_default=func.now())
+    enriched = Column(Boolean, unique=False, default=False, nullable=False)
 
     # notifications
     notif_started_proc = Column(DateTime(timezone=True), unique=False, nullable=True)
@@ -23,3 +24,5 @@ class LegalAct(Base):
 
     notification = relationship("Notification", back_populates="act",
                                 cascade="all, delete")
+    detail = relationship("Detail", back_populates="act",
+                          cascade="all, delete")

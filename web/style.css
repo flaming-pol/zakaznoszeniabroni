@@ -61,6 +61,13 @@ p {
   font-size: 20px;
 }
 
+#detale {
+  margin-top: 50px;
+  padding: 10px;
+  text-align: left;
+  width: 995px;
+}
+
 #kontakt {
   margin: 0 auto;
   padding: 0px;
@@ -108,10 +115,20 @@ p {
   display: none;
 }
 
+#tabelka .hidden_active_row {
+  display: none;
+  background-color: #EE4B4B;
+}
+
 #tabelka .alarm {
   background-color: #EE4B4B;
 }
 
 #tabelka .rok_row {
+  cursor:pointer;
+}
+
+#tabelka .rok_row_hidden {
+  display: none;
   cursor:pointer;
 }

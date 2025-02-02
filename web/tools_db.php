@@ -38,12 +38,18 @@ class dbBase {
     }
   }
 
-  public function cache_lookup($sql) {
+  public function cache_lookup($sql, $args = NULL) {
     $this->memcached_open();
-    $key = 'KEY' . md5($sql);
+    if ($args)
+      $key = 'KEY' . md5(serialize($args)) . md5($sql);
+    else
+      $key = 'KEY' . md5($sql);
     $c_result = $this->memcached_conn->get($key);
     if ($c_result) return $c_result;
-    $rows = $this->fetch($sql);
+    if ($args)
+      $rows = $this->fetch($sql, $args);
+    else
+      $rows = $this->fetch($sql);
     $this->memcached_conn->set($key, $rows, time() + $this->config->memcachedExpire);
     return $rows;
   }
@@ -68,9 +74,24 @@ class dbBase {
 
 class dbMainCRUD extends dbBase {
   public function get_legal_acts() {
-    $sql = "SELECT name, number, year, pdf_url, published_date FROM rozporzadzenia ORDER BY year DESC, number DESC LIMIT 500";
+    $sql = "SELECT id, name, number, year, pdf_url, published_date, enriched FROM rozporzadzenia ORDER BY year DESC, number DESC LIMIT 500";
+
     $rows = $this->cache_lookup($sql);
     if (count($rows) == 0) die("brak rekordów w bazie!");
+    return $rows;
+  }
+
+  public function get_legal_act_detail($id) {
+    $sql = "SELECT name, number, year, pdf_url, published_date, enriched, area, begin, end FROM rozporzadzenia JOIN details ON (rozporzadzenia.id = details.act_id) JOIN detail_times ON (details.id = detail_times.detail_id) WHERE rozporzadzenia.id=:id ORDER BY details.id ASC";
+
+    $rows = $this->cache_lookup($sql, ['id' => $id]);
+    return $rows;
+  }
+
+  public function get_legal_act_dates($id) {
+    $sql = "SELECT begin, end FROM rozporzadzenia JOIN details ON (rozporzadzenia.id = details.act_id) JOIN detail_times ON (details.id = detail_times.detail_id) WHERE rozporzadzenia.id=:id ORDER BY details.id ASC";
+
+    $rows = $this->cache_lookup($sql, ['id' => $id]);
     return $rows;
   }
 
@@ -118,6 +139,24 @@ class dbUserCRUD extends dbBase {
   public function add_user($email) {
     $sql = "INSERT INTO users (email, is_active) VALUES (:email, 0)";
     $this->execute($sql, ['email' => $email]);
+  }
+}
+
+function check_if_active($db_crud, $act_id) {
+  $rows = $db_crud->get_legal_act_dates($act_id);
+  $t_today = new DateTime("now");
+  foreach ($rows as $row) {
+    $t_begin = new DateTime($row["begin"]);
+    $t_end = new DateTime($row["end"]);
+
+    if (!$t_begin || !$t_end)
+      return false;
+
+    $time_diff = $t_end->getTimestamp() - $t_begin->getTimestamp();
+    if ($t_begin->getTimestamp() < $t_today->getTimestamp() &&
+        $t_end->getTimestamp() > $t_today->getTimestamp()){
+          return true;
+        }
   }
 }
 ?>

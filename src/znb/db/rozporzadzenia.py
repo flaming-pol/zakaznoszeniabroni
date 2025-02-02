@@ -1,4 +1,5 @@
 from typing import Any, List
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
 from znb.models import LegalAct
@@ -38,14 +39,30 @@ class LegalActCRUD():
         sql = db.query(LegalAct).filter(LegalAct.number == number)
         return sql.all()
 
+    def get_not_enriched(self, db: Session, year_begin: int = 0, year_end: int = 0
+                         ) -> List[LegalAct]:
+        if (not year_begin) and year_end:
+            return []
+        elif not year_begin and not year_end:
+            sql = db.query(LegalAct).filter(LegalAct.enriched == False)
+        elif year_begin and not year_end:
+            sql = db.query(LegalAct).filter(and_(LegalAct.enriched == False,
+                                                 LegalAct.year >= year_begin))
+        else:
+            sql = db.query(LegalAct).filter(and_(LegalAct.enriched == False,
+                                                 LegalAct.year >= year_begin,
+                                                 LegalAct.year <= year_end))
+        return sql.all()
+
     def create(self, db: Session, name: str, number: int, year: int,
-               published_date: str, pdf_url: str) -> LegalAct:
+               published_date: str, pdf_url: str, enriched: bool = False) -> LegalAct:
         new_legal_act = LegalAct(
             name=name,
             number=number,
             year=year,
             published_date=published_date,
             pdf_url=pdf_url,
+            enriched=enriched
         )
         db.add(new_legal_act)
         db.commit()

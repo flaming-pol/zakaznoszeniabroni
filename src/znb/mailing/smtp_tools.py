@@ -9,6 +9,8 @@ from email.utils import formataddr, formatdate, make_msgid
 from jinja2 import Environment, PackageLoader
 from tenacity import after_log, retry, stop_after_attempt, wait_fixed
 
+from znb.models import LegalAct
+
 
 environment = Environment(loader=PackageLoader("znb.mailing", "templates"))
 
@@ -101,8 +103,7 @@ class SmtpWrapper:
 
 
 def notification_mail_render(destination_email: str, source_email: str, subject: str,
-                             date: str, number: int, year: int, pdf_url: str,
-                             unregister_key: str,
+                             act: LegalAct, unregister_key: str,
                              reply_email: str = None) -> EmailMessage:
     message = EmailMessage()
     message['Date'] = formatdate()
@@ -113,15 +114,25 @@ def notification_mail_render(destination_email: str, source_email: str, subject:
     if reply_email:
         message["Reply-To"] = reply_email
 
-    template_html = environment.get_template("basic_html.j2")
-
-    content_html = template_html.render(
-        date=date,
-        number=number,
-        year=year,
-        pdf_url=pdf_url,
-        unregister_key=unregister_key,
-    )
+    if act.enriched:
+        template_html = environment.get_template("enriched_html.j2")
+        content_html = template_html.render(
+            date=act.published_date,
+            number=act.number,
+            year=act.year,
+            pdf_url=act.pdf_url,
+            unregister_key=unregister_key,
+            details=act.detail,
+        )
+    else:
+        template_html = environment.get_template("basic_html.j2")
+        content_html = template_html.render(
+            date=act.published_date,
+            number=act.number,
+            year=act.year,
+            pdf_url=act.pdf_url,
+            unregister_key=unregister_key,
+        )
     message.set_content(content_html, subtype="html")
     return message
 
