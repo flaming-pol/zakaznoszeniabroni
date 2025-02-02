@@ -1,6 +1,6 @@
 <?php
 //  ZakazNoszeniaBroni.pl -- frontend.
-//  Copyright (C) 2023  mc (kontakt@zakaznoszeniabroni.pl)
+//  Copyright (C) 2023-2025  mc (kontakt@zakaznoszeniabroni.pl)
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@ $legal_acts_rows = $db->get_legal_acts();
 $stats_rows = $db->get_statistics();
 $stats_row = $stats_rows[0];
 
-$db = null;
 ?>
 
 <!DOCTYPE html>
@@ -35,6 +34,7 @@ $db = null;
   <title>ZakazNoszeniaBroni.pl</title>
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css">
@@ -61,6 +61,7 @@ $db = null;
             <th width=97px>Numer</th>
             <th>Nazwa</th>
             <th width=51px>PDF</th>
+            <th width=99px>Szczegóły</th>
           </tr>
 
 <?php
@@ -69,21 +70,35 @@ $i = 0;
 $j = 0;
 
 foreach ($legal_acts_rows as $row) {
+  $r_id = $row["id"];
   $r_year = $row["year"];
   $r_number = $row["number"];
   $r_name = $row["name"];
   $r_date = $row["published_date"];
   $r_link = $row["pdf_url"];
+  $r_enriched = $row["enriched"];
+  if ($r_enriched)
+    $detale = sprintf("<a href=\"detale.php?rozporzadzenie=%d\">Szczegóły</a>", $r_id);
+  else
+    $detale = " ";
 
   // naglowek z rokiem
+  if ($i < 5) {
+    $table_caption_id = "rok_" . $r_year;
+    $table_caption_clsss = "rok_row";
+
+  } else {
+    $table_caption_id = "x_rok_" . $r_year;
+    $table_caption_clsss = "rok_row_hidden";
+  }
   if ($year != $r_year) {
     $year = $r_year;
     $j = 1;
     $i++;
 
     echo '
-          <tr id="rok_' . $r_year . '">
-            <td colspan=4 class="rok_row" onclick="showHideRow(\'r_'. $r_year . '_\');">
+          <tr id="' . $table_caption_id . '" class="' . $table_caption_clsss . '">
+            <td colspan=5 class="rok_row" onclick="showHideRow(\'r_'. $r_year . '_\');">
               <b>' . $r_year . '</b>
             </td>
           </tr>
@@ -91,29 +106,34 @@ foreach ($legal_acts_rows as $row) {
   }
 
   // rekord z rozporzadzeniem
-  if ($i == 1) {
-    $date_now = new DateTime("now");
-    $date_in_db = new DateTime($r_date);
-    $interval = $date_in_db->diff($date_now);
-    if ($interval->days < 10) {
-      echo '          <tr id="r_' . $r_year . '_' . $j . '" class="alarm">';
-    } else {
-      echo '          <tr id="r_'. $r_year . '_' . $j . '">';
-    }
-  } else {
-    echo '          <tr id="r_'. $r_year . '_' . $j . '" class="hidden_row">';
-  }
+  if ($year > 2023)
+    $is_active = check_if_active($db, $r_id);
+  else
+    $is_active = false;
+  if ($i == 1 && $is_active)
+    $class = "alarm";
+  elseif ($i == 1 && !$is_active)
+    $class = "";
+  elseif ($i != 1 && $is_active)
+    $class = "hidden_active_row";
+  else
+    $class = "hidden_row";
   echo '
+          <tr id="r_'. $r_year . '_' . $j . '" class="' . $class . '">
             <td>' . $r_date . '</td>
             <td>' . $r_number . '/' . $r_year . '</td>
             <td>' . $r_name . '</td>
             <td><a href="' . $r_link . '" target="_blank">Link</a></td>
+            <td>' . $detale . '</td>
           </tr>
   ';
   $j++;
 }
+
+$db = null;
 ?>
 		</table>
+    <a id="x_rok_link" href="javascript:void(0);" onclick="showHideRow('x_rok_');">Pokaż więcej</a>
 	</div>
 	<div id="kontakt">
     <b>Uwaga:</b> strona ma charakter hobbystyczny. Autor nie ponosi odpowiedzialności za zgodność publikowanych treści z aktualnie obowiązującym prawem.

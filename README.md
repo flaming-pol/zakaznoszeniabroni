@@ -16,6 +16,7 @@ Działanie serwisu polega na:
   * cyklicznym odpytywaniu strony <a href="https://dziennikustaw.gov.pl/DU" target="_blank">Dziennika Ustaw RP</a> w celu wyszukania wszystkich rozporządzeń zawierających w tytule słowo "<code>broni</code>";
   * przetwarzaniu otrzymanej treści przy pomocy wyrażenia regularnego <code>zakaz(.)*\s(noszenia|przemieszczania)+(.)*broni+</code>;
   * ekstrakcji szczegółowych danych ze zwróconych rozporządzeń;
+  * wzbogacenie rekordów w bazie danych na podstwie analizy pliku PDF rozporządzenia o informacje o obszarze i datach obowiązywania obostrzeń;
   * sprawdzeniu czy pojawiło się nowe rozporządzenie. Jeśli tak, następuje wysyłka powiadomienia do zarejestrowanych użytkowników.
 
 Serwis podzielony jest na dwa komponenty:
@@ -35,6 +36,13 @@ Frontend:
   * **PHP 8.1**
   * PDO MySQL
   * Memcached
+
+## Parser plików PDF
+Jednym z modułów oprogramowania jest *parser plików PDF*. Jego działanie jest automatyczne, w przypadku wykrycia nowego rozporządzenia dot. zakazu noszenia broni, treść rozporządzenia w formacie PDF jest przez program pobierana i poddawana analizie. Ma to na celu wzbogacenie informacji w bazie danych o obszary objęte zakazem oraz daty jego obowiązywania.
+
+**UWAGA!** Działanie parsera opiera się o wzorce opisane wyrażeniami regularnymi. Wzorce opracowane zostały na podstawie dotychczas ogłoszonych rozporządzeń, jednak są one ściśle zależne od gramatyki użytej przez osobę piszącą rozporządzenie, a także nie uwzględniają błędów ortograficznych lub gramatycznych, które może (?!) popełnić urzędnik podczas redagowania tekstu. Oczywiście parser uwzględnia całkiem sporą gamę kombinacji i wzorców rozporządzeń, jednak twórczość ludzka w zakresie pisania tekstu nie ma granic. Dlatego nie mogę udzielić gwarancji na 100% poprawne działanie prasera.
+
+Uruchomienie parsera plików PDF, czyli proces wzbogacania danych jest niezależny od procesu podstawowej obróbki danych pobranych Dziennika Ustaw. W związku z tym, w przypadku błędu parsera lub niemożliwości przetworzenia pliku PDF **powiadomienie o zakazie i tak zostanie wysłane**.
 
 ## Konfiguracja programu
 
@@ -106,7 +114,7 @@ Zrozumiałe jest, że część użytkownik nie będzie zainteresowana powiadomie
 
 ```json5
 {
-  "version": 1,   // wersja struktury danych
+  "version": 2,   // wersja struktury danych
   "last_parser_run": "2023-12-02 13:35:11",   // kiedy ostatni raz został uruchomiony backend
   "last_db_update": "2023-11-29 23:08:11",   // kiedy ostatni raz aktualizowano zawartość bazy zakazów
   "count": 26,   // ilość rozporządzeń w bazie
@@ -116,7 +124,14 @@ Zrozumiałe jest, że część użytkownik nie będzie zainteresowana powiadomie
       "number": 2439,   // numer w Dzienniku Ustaw
       "year": 2023,   // rok ogłoszenia
       "pdf_url": "https://dzienn...",   // link do treści rozporządzenia
-      "published_date": "09-11-2023"   // data ogłoszenia
+      "published_date": "09-11-2023",   // data ogłoszenia
+      "enriched": 1,   // 1 - parsowanie PDFa udało się
+      "details": [
+        "area": "miasta Krakowa",   // obszar obowiązywania
+        "dates": [
+          {"begin": "2025-01-26 00:00:00", "end": "2025-01-27 23:59:59"}
+        ]
+      ]
     }
   ]
 }
@@ -129,6 +144,22 @@ Data w polu <code>last_parser_run</code> powinna zmieniać się w interwałach o
 Obecnie trwają prace koncepcyjne nad przygotowaniem aplikacji na telefony z systemem Android, która byłaby w stanie wysłać powiadomienie *push* o nowych zakazach.
 
 Najpewniejszą metodą powiadomień są wiadomości SMS. Jednak usługa ich wysyłania jest stosunkowo droga co powoduje sceptycyzm u autora projektu oraz naturalne "odsunięcie na dalszy plan" tej metody powiadomień. Możliwe, że w przyszłości jednak pojawi się taka opcja w serwisie.
+
+## Aktualizacja - luty 2025
+
+W lutym 2025 miała miejsce duża aktualizacja programu. Wprowadza on m.in. parser plików PDF oraz mechanizm
+wzbogacania informacji o:
+  * obszar obowiązywania ograniczeń;
+  * daty początku i końca obowiązywania ograniczeń.
+
+Wzbogacone informacje są dostępne z poziomu WEB aplikacji (nowe pole "*szczegóły*") oraz są dołączane do powiadomień mailowych.
+
+W związku rozbudową programu oraz struktur danych, **w przypadku wykorzystywania wersji standalone** należy:
+  * wykonać kopię zapasową bazy danych;
+  * wyłączyć program (usługę systemd lub komendą ``docker-compose -f docker-compose-prod.yml down``);
+  * przebudować obraz dockera komendą: ``docker-compose -f docker-compose-prod.yml build``
+  * uruchomić program (usługę systemd lub komendą ``docker-compose -f docker-compose-prod.yml up``);
+  * sprawdzić w logu czy wykonała się automatyczna migracja bazy danych.
 
 ## Kontakt
 

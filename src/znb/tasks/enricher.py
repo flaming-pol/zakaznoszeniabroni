@@ -16,6 +16,9 @@ def enricher(db_session: Session, record: LegalAct) -> bool:
     Wzbogacanie polega na parsowaniu pliku PDF z rozporządzeniem i wyciągięciu:
     obszaru i dat obowiązywania zakazu.
     """
+    if record.year < 2008:
+        logging.error("Wzbogacanie rozporządzeń działa tylko dla rozporządzeń od 2008r.")
+        return False
     db_acts = LegalActCRUD()
     db_enrichements = DetailCRUD()
     db_enrichements_time = DetailTimeCRUD()
@@ -67,7 +70,7 @@ def enricher(db_session: Session, record: LegalAct) -> bool:
     return True
 
 
-def find_unenriched(year_begin: int = 0, year_end: int = 0):
+def find_unenriched(year_begin: int = 2008, year_end: int = 0):
     """
     Funkcja służy do poszukiwana niewzbogaconych rozporządzeń i ich wzbogacania.
 
@@ -75,7 +78,8 @@ def find_unenriched(year_begin: int = 0, year_end: int = 0):
     """
     db_session = SessionLocal()
     db_acts = LegalActCRUD()
-
+    if year_begin < 2008:
+        year_begin = 2008
     logging.info("Wzbogacanie rozporządzeń w bazie...")
     records = db_acts.get_not_enriched(db_session, year_begin, year_end)
     for r in records:

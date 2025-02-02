@@ -1,21 +1,16 @@
 Plany rozwoju aplikacji na najbliższy czas:
 
 WEB:
--- HIGH: wyświetlanie detali rozporządzeń
--- LOW: strona dla komórek
+-- MED: strona dla komórek
 
 BROADCASTER:
 -- LOW: paginacja odpowiedzi z MySQL
--- LOW: powiadomienia o rozpoczęciu obowiązywania zakazu (jak będą wyciągnięte daty obowiązywania)
+-- ???: powiadomienia o rozpoczęciu obowiązywania zakazu (jak będą wyciągnięte daty obowiązywania)
 
 PROG:
--- HIGH: cykliczne wyszukiwanie nie wzbogaconych rozporządzeń i ich próby wzbogacania
--- HIGH: skrypty do ręcznego wzbogacania rozporządzeń
--- LOW: przechowywanie w cache insertów i update-ów bazy danych.
-        W przypadku błędów system powinien móc odbudować stan na podstawie zawartości cache.
--- LOW: do rozważenia asyncio
+
 
 FEATURES:
--- MED: aplikacja android
+-- HIGH: aplikacja android
 -- LOW: plugin do firefox/chrome
 -- LOW: notyfikacje sms
