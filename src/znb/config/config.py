@@ -17,6 +17,7 @@ class get_config:
     CONFIRMATION_MAIL_SEND_INTERVAL = 30
     MAIL_SERVER = None
     MAIL_SERVER_PORT = None
+    MAIL_HELO_TEXT = None
     MAIL_FROM = None
     MAIL_TLS = False
     MAIL_SSL = False
@@ -44,6 +45,7 @@ class get_config:
         self.CONFIRMATION_MAIL_SEND_INTERVAL = float(env.get('CONFIRMATION_MAIL_SEND_INTERVAL', 30))
         self.MAIL_SERVER = env.get('MAIL_SERVER', 'localhost')
         self.MAIL_SERVER_PORT = int(env.get('MAIL_SERVER_PORT', 25))
+        self.MAIL_HELO_TEXT = env.get('MAIL_HELO_TEXT', None)
         self.MAIL_FROM = env.get('MAIL_FROM', None)
         self.MAIL_TLS = (env.get('MAIL_TLS', False) == 'True')
         self.MAIL_SSL = (env.get('MAIL_SSL', False) == 'True')

@@ -17,7 +17,8 @@ environment = Environment(loader=PackageLoader("znb.mailing", "templates"))
 
 class SmtpWrapper:
     def __init__(self, host: str, port: int, tls_support: bool = False,
-                 ssl_support: bool = False, user: str = None, passwd: str = None):
+                 ssl_support: bool = False, user: str = None, passwd: str = None,
+                 helo_text: str = None):
         self.host = host
         self.port = port
         self.server = None
@@ -26,6 +27,7 @@ class SmtpWrapper:
         self.ssl = ssl_support
         self.user = user
         self.passwd = passwd
+        self.helo_text = helo_text
 
     def __del__(self):
         if self.server:
@@ -35,8 +37,11 @@ class SmtpWrapper:
                 pass
 
     def authenticate(self):
-        if self.tls is True:
+        if self.helo_text:
+            self.server.ehlo(self.helo_text)
+        else:
             self.server.ehlo()
+        if self.tls is True:
             self.server.starttls()
         if self.user and self.passwd:
             self.server.login(self.user, self.passwd)
@@ -106,10 +111,10 @@ def notification_mail_render(destination_email: str, source_email: str, subject:
                              act: LegalAct, unregister_key: str,
                              reply_email: str = None) -> EmailMessage:
     message = EmailMessage()
-    message['Date'] = formatdate()
-    message['Message-ID'] = make_msgid(domain=source_email.split('@')[1])
+    message['Date'] = formatdate(localtime=True)
+    message["From"] = formataddr(("ZakazNoszeniaBroni.pl", source_email))
     message["To"] = destination_email
-    message["From"] = formataddr(("ZakazyNoszeniaBroni.pl", source_email))
+    message['Message-ID'] = make_msgid(domain=source_email.split('@')[1])
     message["Subject"] = subject
     if reply_email:
         message["Reply-To"] = reply_email
@@ -117,6 +122,7 @@ def notification_mail_render(destination_email: str, source_email: str, subject:
     if act.enriched:
         template_html = environment.get_template("enriched_html.j2")
         content_html = template_html.render(
+            id=act.id,
             date=act.published_date,
             number=act.number,
             year=act.year,
@@ -133,7 +139,7 @@ def notification_mail_render(destination_email: str, source_email: str, subject:
             pdf_url=act.pdf_url,
             unregister_key=unregister_key,
         )
-    message.set_content(content_html, subtype="html")
+    message.set_content(content_html, subtype="html", charset='UTF-8', cte='quoted-printable')
     return message
 
 
@@ -167,10 +173,10 @@ def confirmation_mail_render(destination_email: str, source_email: str,
                              subject: str, confirmation_string: str,
                              reply_email: str = None) -> EmailMessage:
     message = EmailMessage()
-    message['Date'] = formatdate()
-    message['Message-ID'] = make_msgid(domain=source_email.split('@')[1])
+    message['Date'] = formatdate(localtime=True)
+    message["From"] = formataddr(("ZakazNoszeniaBroni.pl", source_email))
     message["To"] = destination_email
-    message["From"] = formataddr(("ZakazyNoszeniaBroni.pl", source_email))
+    message['Message-ID'] = make_msgid(domain=source_email.split('@')[1])
     message["Subject"] = subject
     if reply_email:
         message["Reply-To"] = reply_email
@@ -180,5 +186,5 @@ def confirmation_mail_render(destination_email: str, source_email: str,
     content_html = template_html.render(
         confirmation_string=confirmation_string,
     )
-    message.set_content(content_html, subtype="html")
+    message.set_content(content_html, subtype="html", charset='UTF-8', cte='quoted-printable')
     return message

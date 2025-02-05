@@ -1,10 +1,11 @@
-<html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="pl" xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   </head>
   <body>
     Dzień dobry,<br>
-    otrzymujesz tę wiadomość, ponieważ został ogłoszony <strong>zakaz noszenia broni</strong>.
+    otrzymujesz tę wiadomość, ponieważ został ogłoszony <strong>zakaz noszenia</strong>.
     <br><br>
     Zakaz obowiązuje na obszarze:<br>
     {% for d in details %}
@@ -22,13 +23,14 @@
     <strong>Szczegóły rozporządzenia:</strong><br>
     data publikacji: {{ date }}<br>
     numer: {{ number }}/{{ year }}<br>
-    link: <a href="{{ pdf_url }}">{{ pdf_url }}</a>
+    więcej szczegółów: <a href="https://zakaznoszeniabroni.pl/detale.php?rozporzadzenie={{ id }}">https://zakaznoszeniabroni.pl/detale.php?rozporzadzenie={{ id }}</a>
     <br><br><br>
 
-    <b>Uwaga</b> informacje o obszarze obowiązywania zakazu oraz datach zostały pobrane z pliku PDF rozporządzenia w sposób automatyczny. Zapoznaj się z pełną treścią <a href="{{ pdf_url }}">rozporządzenia</a>!
+    <b>Uwaga</b> informacje o obszarze obowiązywania zakazu oraz datach zostały pobrane z pliku PDF rozporządzenia w sposób automatyczny. Zapoznaj się z pełną treścią rozporządzenia!
+    <br><br>
+    Zapraszamy na stronę główną serwisu <a href="https://zakaznoszeniabroni.pl">https://zakaznoszeniabroni.pl</a>
     <br><br><br><br>
     Wiadomość wysłana z serwisu <a href="https://zakaznoszeniabroni.pl">https://zakaznoszeniabroni.pl</a>.
-    Jeśli nie chcesz otrzymywać więcej takich powiadomień, usuń swój adres z bazy danych klikając w <a href="https://zakaznoszeniabroni.pl/rejestracja.php?usun={{ unregister_key }}">link</a>.<br>
-    Wiadomość wysłana automatycznie. Proszę na nią nie odpowiadać.
+    Otrzymałeś ten e-mail ponieważ wyraziłeś zgodę na udostępnianie informacji handlowych drogą elektroniczną. Jeżeli nie chcesz otrzymywać takich wiadomości kliknij w link <a href="https://zakaznoszeniabroni.pl/rejestracja.php?usun={{ unregister_key }}">Zrezygnuj z subskrypcji</a>.<br>
   </body>
 </html>

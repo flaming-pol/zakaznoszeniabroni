@@ -9,6 +9,7 @@ def main():
     z3()
     z4()
     z5()
+    z6()
     other()
 
 
@@ -166,6 +167,12 @@ def z5():
                        'dates': {'ranges': [['16-08-2002', '19-08-2002']], 'days': []}}]
 
 
+def z6():
+    retval = run("pdf-tests/Z6/26.pdf")
+    assert retval == [{'area': 'miasta Gdańska',
+                       'dates': {'ranges': [['06-02-2025', '07-02-2025']], 'days': []}}]
+
+
 def other():
     # składnia podobna do Z5/25.pdf
     test1 = "§ Wprowadza się zakaz noszenia broni na obszarze miasta Poznania w dniach 27-29 listopada 2008 r. §"
@@ -210,6 +217,19 @@ def other():
     retval = run(test1, test=True)
     assert retval == [{'area': 'miasta Poznania',
                       'dates': {'ranges': [], 'days': ['27-11-2008', '28-11-2008', '30-11-2008']}}]
+
+    # składnia podobna do Z6/26.pdf
+    test1 = "§ 1. Wprowadza się od dnia 6 lutego 2025 r. do dnia 7 lutego 2025 r. na obszarze miasta Gdańska zakaz noszenia lub przemieszczania w stanie rozładowanym wszelkiego rodzaju broni §"
+    print(f"--> synthetic: {test1}")
+    retval = run(test1, test=True)
+    assert retval == [{'area': 'miasta Gdańska',
+                       'dates': {'ranges': [['06-02-2025', '07-02-2025']], 'days': []}}]
+
+    test1 = "§ 1. Wprowadza się od dnia 6 lutego 2025 r. do dnia 7 lutego 2025 r. zakaz noszenia lub przemieszczania w stanie rozładowanym wszelkiego rodzaju broni na obszarze miasta Gdańska §"
+    print(f"--> synthetic: {test1}")
+    retval = run(test1, test=True)
+    assert retval == [{'area': 'miasta Gdańska',
+                       'dates': {'ranges': [['06-02-2025', '07-02-2025']], 'days': []}}]
 
 
 main()

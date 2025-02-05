@@ -34,7 +34,8 @@ def process_send_confirmation():
     if users:
         logging.debug("Wysyłanie e-mail z potiwerdzeniem założenia konta")
         s = SmtpWrapper(config.MAIL_SERVER, config.MAIL_SERVER_PORT, config.MAIL_TLS,
-                        config.MAIL_SSL, config.MAIL_USERNAME, config.MAIL_PASSWORD)
+                        config.MAIL_SSL, config.MAIL_USERNAME, config.MAIL_PASSWORD,
+                        config.MAIL_HELO_TEXT)
         for user in users:
             logging.debug(f"Wysyłanie maila z potwierdzenem do {user.id} ({user.email})")
             while True:
@@ -46,7 +47,7 @@ def process_send_confirmation():
             msg = confirmation_mail_render(
                 destination_email=user.email,
                 source_email=config.MAIL_FROM,
-                subject="Zakaz noszenia broni - potwierdzenie założenia konta!",
+                subject="Zakaz noszenia broni - potwierdzenie założenia konta",
                 confirmation_string=confirmation_string,
             )
             try:
@@ -87,7 +88,8 @@ def process_event(act: LegalAct):
     db_users = UserCRUD()
     db_notif = NotificationCRUD()
     s = SmtpWrapper(config.MAIL_SERVER, config.MAIL_SERVER_PORT, config.MAIL_TLS,
-                    config.MAIL_SSL, config.MAIL_USERNAME, config.MAIL_PASSWORD)
+                    config.MAIL_SSL, config.MAIL_USERNAME, config.MAIL_PASSWORD,
+                    config.MAIL_HELO_TEXT)
     smtp_errors = 0
     count = 0
     mail_delay = config.MAIL_SEND_DELAY

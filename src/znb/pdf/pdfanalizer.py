@@ -104,8 +104,8 @@ def parser(text_dash):
     days_separ = r"w_dniu|w_dniach|w_okresie|na_okres"
     para_regex = r"\§((?!\§).)*?(zakaz).*(noszenia).*(broni).*(obszarze|terenie).*?\§"
     para_regex2 = r"\§((?!\§).)*?(obszarze|terenie).*(zakaz).*(noszenia).*(broni).*?\§"
-    dir1_regex = rf"(zakaz).*({days_separ})"
-    dir2_regex = rf"({days_separ}).*(zakaz)"
+    dir1_regex = rf"(zakaz).*({days_separ}|od_dnia)"
+    dir2_regex = rf"({days_separ}|od_dnia).*(zakaz)"
     end_regex = rf"({MONTHS_REGEX})\_\d{{4}}"
 
     para_match_obj = re.search(para_regex, text_dash) or re.search(para_regex2, text_dash)
@@ -114,21 +114,20 @@ def parser(text_dash):
         return []
     para_match = para_match_obj.group().strip('§').strip('_')
 
-    phase0 = re.split(r"obszarze|terenie", para_match)
+    phase0 = re.split(r"obszarze|terenie|obrębie|terytorium|strefie|przestrzeni", para_match)
     if re.search(dir1_regex, para_match):
         # obsługa składni: Wprowadza się zakaz [..] na obszarze [..] w dniach [...]
         phase0.pop(0)  # wyrzucamy wszystko co jest przed "obszarem"
     elif re.search(dir2_regex, para_match):
         # obsługa składni: Wprowadza się w dniach [..] na obszarze [..] zakaz.
-        search_obj = re.search(days_separ, para_match)
+        search_obj = re.search(f"{days_separ}|od_dnia", para_match)
         phase0[1] = phase0[1].split("zakaz")[0]
-        phase0[0] = phase0[1]+phase0[0][search_obj.span()[0]:]
+        phase0[0] = phase0[1]+"_"+phase0[0][search_obj.span()[0]:]
         phase0.pop(1)
     else:
         logging.error("Analiza PDF zakończyła się błędem nie udało się poprawnie "
                       "ustalić kierunku przetwarzania :(")
         return []
-
     if phase0[0].startswith(':'):
         # obsługa sytuacji gdy po "obszarze" jest kilka podpunktów kończących się ";"
         tmp = phase0.pop(0)
@@ -139,7 +138,13 @@ def parser(text_dash):
         if not end_match_list:
             return []
         phase3 = phase2[:end_match_list.pop()]
-        phase4 = re.split(days_separ, phase3)
+        phase4 = re.split(days_separ, phase3)  # zwraca listę z surowymi danymi: ['<miasto>', '<data>']
+        if len(phase4) < 2:
+            # w sytuacji gdy nie ma rozdzielnika pomiedzy miastem a datą, np. "obszarze miasta Gdańska od dnia 6 lutego"
+            phase4 = re.split(r'.(?=od_dnia)', phase3, maxsplit=1)
+        if len(phase4) < 2:
+            logging.error("Analiza PDF zakończyła się błędem - faza 4 "
+                          "- nie udało się rozdzielić daty od obszaru")
         phase5 = [s.strip(" ,;-–_") for s in phase4]
         area = phase5[0]
         date = phase5[1]
