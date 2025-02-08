@@ -145,6 +145,7 @@ def parser(text_dash):
         if len(phase4) < 2:
             logging.error("Analiza PDF zakończyła się błędem - faza 4 "
                           "- nie udało się rozdzielić daty od obszaru")
+            return []
         phase5 = [s.strip(" ,;-–_") for s in phase4]
         area = phase5[0]
         date = phase5[1]
