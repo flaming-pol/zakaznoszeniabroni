@@ -1,16 +1,10 @@
 Plany rozwoju aplikacji na najbliższy czas:
 
-WEB:
--- MED: strona dla komórek
-
 BROADCASTER:
 -- LOW: paginacja odpowiedzi z MySQL
--- ???: powiadomienia o rozpoczęciu obowiązywania zakazu (jak będą wyciągnięte daty obowiązywania)
-
-PROG:
-
+-- LOW: powiadomienia o rozpoczęciu obowiązywania zakazu
 
 FEATURES:
--- HIGH: aplikacja android
--- LOW: plugin do firefox/chrome
+-- MED: aplikacja android
+-- MED: plugin do firefox/chrome
 -- LOW: notyfikacje sms

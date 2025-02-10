@@ -132,3 +132,54 @@ p {
   display: none;
   cursor:pointer;
 }
+
+/* Widok mobilny v1 */
+@media screen and (max-width: 900px) {
+  #msg_container {
+    width: 100%;
+  }
+
+  #main {
+    margin-top: 10px;
+    padding: 3px;
+    text-align: left;
+    width: 100%;
+    display: table;
+  }
+
+  #main h1 {
+    display: none;
+  }
+
+  #detale {
+    margin-top: 30px;
+    width: 100%;
+  }
+
+  #kontakt {
+    padding: 3px;
+    width: 100%;
+    font-size: 14px;
+  }
+
+  #stopka {
+    padding: 3px;
+    width: 100%;
+  }
+
+  #checkboxy_zgody {
+    width: 100%;
+  }
+
+  #tabelka {
+    /* table-layout: fixed; */
+    width: 100%;
+    max-width: 100%;
+    text-align: left;
+  }
+
+  #tabelka tr th:nth-child(3), table tr td:nth-child(3) {
+    /* Ukrycie pola "nazwa" */
+    display: none;
+  }
+}

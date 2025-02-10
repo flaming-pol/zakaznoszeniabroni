@@ -23,7 +23,7 @@ $db = null;
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css">
 
-  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
 
 <body>
@@ -42,7 +42,10 @@ if (count($legal_acts_rows) < 1) {
   echo 'Obowiązuje na obszarze: <br>';
   $is_active = false;
   $last_area = "";
+  $i = 0;
+  $array_len = count($legal_acts_rows);
   foreach ($legal_acts_rows as $row) {
+    $i++;
     $area = $row["area"];
     if ($last_area != $area) {
       if ($last_area != "") echo '<br>';
@@ -63,9 +66,10 @@ if (count($legal_acts_rows) < 1) {
 
       if ($active_wrapper) echo '<font color="red">';
       if ($time_diff < 86400)
-        echo ' <b>' . $t_begin->format("d-m-Y") . ',</b>';
+        echo ' <b>' . $t_begin->format("d-m-Y") . '</b>';
       else
-        echo ' od <b>' . $t_begin->format("d-m-Y") . '</b> do <b> ' . $t_end->format("d-m-Y") . ',</b>';
+        echo ' od <b>' . $t_begin->format("d-m-Y") . '</b> do <b> ' . $t_end->format("d-m-Y") . '</b>';
+      if ($i != $array_len) echo ",";
       if ($active_wrapper) echo '</font>';
     }
   }

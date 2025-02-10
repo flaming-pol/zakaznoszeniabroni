@@ -39,7 +39,7 @@ $stats_row = $stats_rows[0];
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css">
 
-  <link rel="stylesheet" href="style.css?v=2">
+  <link rel="stylesheet" href="style.css?v=3">
 
   <script type="text/javascript">
     function showHideRow(row) {
@@ -51,7 +51,6 @@ $stats_row = $stats_rows[0];
 <body>
 	<div id="main">
     <h1>zakaznoszeniabroni.pl</h1>
-    <p>Strona zawiera informacje o czasowych zakazach noszenia i przemieszczania broni palnej pozyskane z Dziennika Ustaw.</p>
     <p>Chcesz otrzymywać powiadomienia e-mail o nowych zakazach? <a href="rejestracja.php"> Zarejestruj się! </a></p>
     <br>
 		<table border=1 id="tabelka" align=center cellpadding=10>
@@ -82,6 +81,16 @@ foreach ($legal_acts_rows as $row) {
   else
     $detale = " ";
 
+  // napis pokaż więcej
+  if ($i == 5) {
+      echo '
+            <tr id="x_rok_link">
+              <td colspan=5>
+                <a id="x_rok_link" href="javascript:void(0);" onclick="showHideRow(\'x_rok_\');">Pokaż więcej</a>
+              </td>
+            </tr>
+  ';
+    }
   // naglowek z rokiem
   if ($i < 5) {
     $table_caption_id = "rok_" . $r_year;
@@ -133,7 +142,6 @@ foreach ($legal_acts_rows as $row) {
 $db = null;
 ?>
 		</table>
-    <a id="x_rok_link" href="javascript:void(0);" onclick="showHideRow('x_rok_');">Pokaż więcej</a>
 	</div>
 	<div id="kontakt">
     <b>Uwaga:</b> strona ma charakter hobbystyczny. Autor nie ponosi odpowiedzialności za zgodność publikowanych treści z aktualnie obowiązującym prawem.
