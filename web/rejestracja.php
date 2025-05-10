@@ -31,7 +31,7 @@ if ($request_method === "POST") {
   $db->add_user($email);
   $msg_ok[] = "Dodano użytkownika <b>$email</b> do bazy!";
   $msg_ok[] = "Twoje konto wymaga aktywacji. Link aktywacyjny wysłano e-mailem.";
-  $msg_ok[] = 'Jeśli e-mail na dotarł w ciągu 15 minut proszę o informacje na <a href="mailto:kontakt@zakaznoszeniabroni.pl">kontakt@zakaznoszeniabroni.pl</a>';
+  $msg_ok[] = 'Jeśli e-mail nie dotarł w ciągu 15 minut proszę o informacje na <a href="mailto:kontakt@zakaznoszeniabroni.pl">kontakt@zakaznoszeniabroni.pl</a>';
   redir($msg_ok, $msg_fail);
 }
 
