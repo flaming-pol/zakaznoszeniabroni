@@ -24,6 +24,10 @@ class get_config:
     MAIL_USERNAME = None
     MAIL_PASSWORD = None
     MAIL_SEND_DELAY = 0.1
+    SMS_ENABLED = False
+    SMS_DEMO_MODE = True
+    SMS_API_TOKEN = "unknown"
+    SMS_API_FROM_FIELD = "ZNB MATEUSZ"
 
     def __init__(self):
         load_dotenv(override=False)
@@ -52,3 +56,7 @@ class get_config:
         self.MAIL_USERNAME = env.get('MAIL_USERNAME', None)
         self.MAIL_PASSWORD = env.get('MAIL_PASSWORD', None)
         self.MAIL_SEND_DELAY = float(env.get('MAIL_SEND_DELAY', 0.1))
+        self.SMS_ENABLED = (env.get('SMS_ENABLED', False) == 'True')
+        self.SMS_DEMO_MODE = (env.get('SMS_DEMO_MODE', False) == 'True')
+        self.SMS_API_TOKEN = env.get('SMS_API_TOKEN', 'unknown')
+        self.SMS_API_FROM_FIELD = env.get('SMS_API_FROM_FIELD', 'TEST')

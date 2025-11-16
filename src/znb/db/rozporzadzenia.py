@@ -2,7 +2,7 @@ from typing import Any, List
 from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
-from znb.models import LegalAct
+from znb.models import LegalAct, SmsNotificationCapability
 
 
 class LegalActCRUD():
@@ -31,6 +31,16 @@ class LegalActCRUD():
             LegalAct.notif_started_proc == None)
         return sql.all()
 
+    def get_sms_alert_capable(self, db: Session) -> List[LegalAct]:
+        sql = db.query(LegalAct).filter(
+            LegalAct.notif_sms_cap == SmsNotificationCapability.alert)
+        return sql.all()
+
+    def get_sms_remind_capable(self, db: Session) -> List[LegalAct]:
+        sql = db.query(LegalAct).filter(
+            LegalAct.notif_sms_cap == SmsNotificationCapability.reminder)
+        return sql.all()
+
     def count_by_year(self, db: Session, year: int) -> int:
         sql = db.query(LegalAct).filter(LegalAct.year == year)
         return sql.count()
@@ -55,14 +65,17 @@ class LegalActCRUD():
         return sql.all()
 
     def create(self, db: Session, name: str, number: int, year: int,
-               published_date: str, pdf_url: str, enriched: bool = False) -> LegalAct:
+               published_date: str, pdf_url: str, enriched: bool = False,
+               sms_capable: SmsNotificationCapability = SmsNotificationCapability.non
+               ) -> LegalAct:
         new_legal_act = LegalAct(
             name=name,
             number=number,
             year=year,
             published_date=published_date,
             pdf_url=pdf_url,
-            enriched=enriched
+            enriched=enriched,
+            notif_sms_cap=sms_capable
         )
         db.add(new_legal_act)
         db.commit()
