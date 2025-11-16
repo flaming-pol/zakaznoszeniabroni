@@ -28,6 +28,9 @@ from znb.tasks import (
     find_unenriched,
     process_event_from_db,
     process_send_confirmation,
+    process_sms_alerts,
+    process_sms_remind,
+    test_sms,
 )
 from znb.tools import check_db
 from znb.tools.logging import setup_logging
@@ -53,6 +56,9 @@ def main():
     schedule.every(config.CRAWLER_INTERVAL).minutes.do(parser_wrapper)
     schedule.every(config.CRAWLER_INTERVAL).minutes.do(find_unenriched,
                                                        year_begin=config.PARSER_YEAR)
+    schedule.every(config.CRAWLER_INTERVAL).minutes.do(process_sms_alerts)
+    schedule.every(config.CRAWLER_INTERVAL).minutes.do(process_sms_remind)
+    schedule.every().day.at('15:00').do(test_sms)
 
     signal.signal(signal.SIGINT, lambda s, f: schedule.clear())
 

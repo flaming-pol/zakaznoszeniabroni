@@ -2,9 +2,7 @@ Plany rozwoju aplikacji na najbliższy czas:
 
 BROADCASTER:
 -- LOW: paginacja odpowiedzi z MySQL
--- LOW: powiadomienia o rozpoczęciu obowiązywania zakazu
 
 FEATURES:
 -- MED: aplikacja android
 -- MED: plugin do firefox/chrome
--- LOW: notyfikacje sms

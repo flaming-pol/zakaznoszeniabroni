@@ -4,13 +4,23 @@
 
 Serwis służy dostarczaniu informacji o zakazach noszenia i przemieszczania broni palnej na terenie Polski, tj. działań Urzędu na podstawie art. 33 ust. 1 Ustawy o Broni i Amunicji.
 
+## Powiadomienia SMS
+
+Aktualnie testujemy powiadomienia SMS o nowych zakazach oraz przypomienia SMS o obowiązywaniu zakazów: <a href="https://imgur.com/a/zsG7Tz7" target="_blank">https://imgur.com/a/zsG7Tz7</a>. Jest to funkcja eksperymentalna, zależna od zewnętrznego dostawy usługi SMS (obecnie jest to <a href="https://smsplanet.pl/" target="_blank">smsplanet.pl</a>).
+
+**W ramach testów istnieje możliwość uruchomienia bezpłatnej usługi powiadomień SMS, szczegóły <a href="https://braterstwo.eu/tforum/t/1255260/zakaznoszeniabroni.pl-serwis-z-informacjiami-o-tej-niemilej-przypadlosci?full#e-c-1914654" target="_blank">tutaj</a>**.
+
+## O serwisie
+
 Serwis dostarcza informacje przy pomocy:
   * interfejsu graficznego na stronie internetowej <a href="https://zakaznoszeniabroni.pl" target="_blank">https://zakaznoszeniabroni.pl</a>
   * interfejsu JSON na stronie internetowej <a href="https://zakaznoszeniabroni.pl/json.php" target="_blank">https://zakaznoszeniabroni.pl/json.php</a>
   * powiadomień wysyłanych na e-mail
+  * **powiadomień w formie wiadomości SMS**
 
 Aktualne kanały powiadomień:
   * e-mail
+  * SMS
 
 Działanie serwisu polega na:
   * cyklicznym odpytywaniu strony <a href="https://dziennikustaw.gov.pl/DU" target="_blank">Dziennika Ustaw RP</a> w celu wyszukania wszystkich rozporządzeń zawierających w tytule słowo "<code>broni</code>";
@@ -143,7 +153,7 @@ Data w polu <code>last_parser_run</code> powinna zmieniać się w interwałach o
 
 Obecnie trwają prace koncepcyjne nad przygotowaniem aplikacji na telefony z systemem Android, która byłaby w stanie wysłać powiadomienie *push* o nowych zakazach.
 
-Najpewniejszą metodą powiadomień są wiadomości SMS. Jednak usługa ich wysyłania jest stosunkowo droga co powoduje sceptycyzm u autora projektu oraz naturalne "odsunięcie na dalszy plan" tej metody powiadomień. Możliwe, że w przyszłości jednak pojawi się taka opcja w serwisie.
+Aktualnie trwają prace koncepcyjne nad pluginami do popularnych przeglądarek: Firefox i Chrome i powiadomieniami bezpośrednio w przeglądarce internetowej.
 
 ## Aktualizacja - luty 2025
 

@@ -7,8 +7,10 @@ from datetime import datetime
 from znb.config import get_config
 from znb.db import LegalActCRUD, StatsCRUD
 from znb.db.session import SessionLocal
+from znb.models import SmsNotificationCapability
 from znb.crawler import dziennik_ustaw_search_v2
 from .enricher import enricher
+from .sms_notifications import process_sms_alerts
 
 
 def parser_wrapper():
@@ -54,7 +56,9 @@ def parser():
                                         year=int(act.year),
                                         published_date=act.published_date,
                                         pdf_url=act.pdf_url,
-                                        enriched=False)
+                                        enriched=False,
+                                        sms_capable=SmsNotificationCapability.alert
+                                        )
             logging.info(f"===> dodano do bazy rekord: {act.number}/{act.year} z"
                          f" {act.published_date} id w bazie: {new_record.id}")
             new_records += 1
@@ -69,21 +73,24 @@ def parser():
                     for t in detail.time:
                         logging.info(f"      {t.begin} - {t.end}")
     if year != 0:
-        db_intems = db_acts.count_by_year(db_session, year)
+        db_items = db_acts.count_by_year(db_session, year)
     else:
-        db_intems = db_acts.count(db_session)
+        db_items = db_acts.count(db_session)
 
     # timestamp aktualizacji danych
     if new_records > 0:
         db_stats.update(db_session, db_update=True)
+        # Wysyłka alertów SMS
+        if config.SMS_ENABLED:
+            process_sms_alerts()
     else:
         db_stats.update(db_session, db_update=False)
 
     logging.info(f"w Dzienniku znaleziono rekordów: {len(acts)},"
-                 f" w bazie znaleziono rekordów: {db_intems},"
+                 f" w bazie znaleziono rekordów: {db_items},"
                  f" dodano do bazy rekordów: {new_records},"
                  f" czas: {time.time()-start_time:.4f} s.")
-    if len(acts) < db_intems:
+    if len(acts) < db_items:
         logging.warning(f"Wykryto podejrzaną sytuację: liczba rekordów w DU {len(acts)}"
-                        f" jest mniejsza niż w bazie: {db_intems}")
+                        f" jest mniejsza niż w bazie: {db_items}")
     db_session.close()
