@@ -67,6 +67,7 @@ $stats_row = $stats_rows[0];
 $year = 0;
 $i = 0;
 $j = 0;
+$show_more = false;  // flaga czy wyswietlowo baner "pokaz wiecej"
 
 foreach ($legal_acts_rows as $row) {
   $r_id = $row["id"];
@@ -82,7 +83,7 @@ foreach ($legal_acts_rows as $row) {
     $detale = " ";
 
   // napis pokaż więcej
-  if ($i == 5) {
+  if ($i == 6 and $show_more == false) {
       echo '
             <tr id="x_rok_link">
               <td colspan=5>
@@ -90,6 +91,7 @@ foreach ($legal_acts_rows as $row) {
               </td>
             </tr>
   ';
+      $show_more = true;
     }
   // naglowek z rokiem
   if ($i < 5) {
